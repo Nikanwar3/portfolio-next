@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# nidhi kanwar — portfolio
 
-## Getting Started
+Personal portfolio built with Next.js, TypeScript, and Tailwind CSS. Includes a chat
+widget backed by a small retrieval pipeline over resume/project data, answered by
+Groq's LLM API when a key is configured (falls back to returning the matched
+knowledge chunk directly if not).
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router) + TypeScript + Tailwind CSS v4
+- Framer Motion for scroll reveals, Lucide for icons
+- `/api/chat` route: keyword retrieval (`src/lib/retrieve.ts`) over `src/lib/knowledge.ts`,
+  then Groq chat completion (`groq-sdk`) with same-origin + best-effort rate limiting
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Chat widget setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy `.env.example` to `.env.local` and add a free Groq API key from
+[console.groq.com](https://console.groq.com):
 
-## Learn More
+```bash
+cp .env.example .env.local
+# edit .env.local, set GROQ_API_KEY
+```
 
-To learn more about Next.js, take a look at the following resources:
+Without a key, the widget still works — it just returns the best-matching knowledge
+chunk directly instead of an LLM-generated answer.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploying
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Import this repo on [vercel.com](https://vercel.com/new), add `GROQ_API_KEY` as an
+environment variable in the project settings, and deploy. No other config needed.
 
-## Deploy on Vercel
+## Updating content
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Resume facts / project descriptions the chatbot can answer from: `src/lib/knowledge.ts`
+- Project cards shown on the page: `src/lib/projects.ts`
+- Page copy/sections: `src/components/*`
